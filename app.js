@@ -1,16 +1,25 @@
-const { OAuth2Client } = require("google-auth-library");
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+const connectDb = require("./config/db");
+const client = require("./config/redis");
+const authRoutes = require("./routes/authRoutes");
+const urlRoutes = require("./routes/urlRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const rateLimiter = require("./middleware/rateLimiter");
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const app = express();
 
-app.get("/auth/google", (req, res) => {
-  const url = client.generateAuthUrl({
-    access_type: "offline",
-    scope: ["profile", "email"],
-  });
-  res.redirect(url);
-});
-app.get('/auth/google/callback' , (req , res)=>{
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-   res.send('hello from simple server :)')
+  client.connect().then(() => console.log("Connected to Redis"));
+  connectDb();
 
-})
+
+app.use('/api/auth', authRoutes);
+app.use('/api/shorten', rateLimiter, urlRoutes);
+app.use('/api/analytics', analyticsRoutes);
+
+module.exports = app;

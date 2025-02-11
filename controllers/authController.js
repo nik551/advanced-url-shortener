@@ -20,13 +20,13 @@ const googleLogin = async (req, res) => {
       user = new User({ googleId, email });
       await user.save();
     }
-
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
     res.status(200).json({ userId: user._id, email, accessToken });
   } catch (err) {
+    console.log(err)
     res.status(400).json({ error: 'Invalid token' });
   }
 };
