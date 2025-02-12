@@ -1,0 +1,29 @@
+# Stage 1: Build the app
+FROM node:16.17.0-alpine3.16 AS builder
+
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the entire project and build
+COPY . .
+RUN npm run build # Remove if not needed
+
+# Stage 2: Run the app in a lightweight container
+FROM node:16.17.0-alpine3.16
+
+WORKDIR /app
+
+# Copy built files and node_modules from builder stage
+COPY --from=builder /app ./
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Expose the application port
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
