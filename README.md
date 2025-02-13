@@ -1,7 +1,7 @@
 #  Advanced URL Shortener API
 
 A scalable **Custom URL Shortener API** with **Google Sign-In authentication, rate limiting, analytics tracking, and Redis caching**. The system allows users to create short URLs, track analytics, and group links by topics for better management.
-
+- **Deployed URL:**  [Advanced URL Shortener](https://advanced-url-shortener-2fav.onrender.com/)
 ##  Features
 
 ✅ **User Authentication** (Google Sign-In)  
@@ -27,6 +27,30 @@ A scalable **Custom URL Shortener API** with **Google Sign-In authentication, ra
 - **Version Control:** Git, GitHub  
 
 ---
+
+## ⚡ Setup & Installation
+
+### 1️⃣ Clone the Repository  
+```sh
+git clone https://github.com/yourusername/url-shortener.git
+cd url-shortener
+```
+### 2️⃣ Install dependencies
+``` sh
+npm install
+```
+### 3️⃣ Configure .env file
+```sh
+MONGO_URI=mongodb+srv://nikhil:nikhil123456@cluster0.9omcb.mongodb.net/advanced-url_shortener?retryWrites=true&w=majority&appName=Cluster0
+REDIS_URL=rediss://red-cum30lggph6c73dadp30:rdxBWMVEEyR5YUolbB9a9RrFzW0QZMQe@oregon-redis.render.com:6379
+JWT_SECRET=yourSecret
+GOOGLE_CLIENT_ID=527473349005-rem8qb0mb44dvroohpoue098ebchog3t.apps.googleusercontent.com
+PORT=3000
+```
+### 4️⃣ Run the project
+```sh
+npm start
+```
 
 ##  API Endpoints
 
@@ -86,16 +110,11 @@ No headers or body needed.
   Location: https://example.com/very-long-url
 
 ### 4️⃣ URL Analytics  
-- **`GET /api/analytics/{alias}`**  
-  - Returns click stats, unique users, OS & device breakdown  
-
-### 5️⃣ Topic-Based Analytics  
- **`GET /api/analytics/topic/{topic}`**  
-  **Description** : Get analytics for a specific short URL (requires JWT token).
-
-  ####Response:
+- **`GET /api/analytics/myalias`**
+  **Description:** Get analytics for a specific short URL (requires JWT token).  
+   #### Response:
   ```json
-{
+  {
   "totalClicks": 100,
   "uniqueUsers": 50,
   "clicksByDate": [
@@ -110,20 +129,58 @@ No headers or body needed.
     { "deviceName": "mobile", "uniqueClicks": 40, "uniqueUsers": 20 },
     { "deviceName": "desktop", "uniqueClicks": 60, "uniqueUsers": 30 }
   ]
+  }
+  ```
+
+### 5️⃣ Topic-Based Analytics  
+ **`GET /api/analytics/topic/marketing`**  
+  **Description** : Get analytics for a specific short URL (requires JWT token).
+
+#### Response:
+```json
+{
+  "totalClicks": 500,
+  "uniqueUsers": 200,
+  "clicksByDate": [
+    { "date": "2023-10-01", "clicks": 100 },
+    { "date": "2023-10-02", "clicks": 400 }
+  ],
+  "urls": [
+    {
+      "shortUrl": "http://localhost:3000/api/shorten/myalias",
+      "totalClicks": 100,
+      "uniqueUsers": 50
+    }
+  ]
 }
 
-  ```
-  
+```
 
 ### 6️⃣ Overall Analytics  
 - **`GET /api/analytics/overall`**  
-  - Provides a complete analytics report for all user-created URLs  
+  - Provides a complete analytics report for all user-created URLs
+#### Response
+```json
+{
+  "totalUrls": 5,
+  "totalClicks": 1000,
+  "uniqueUsers": 300,
+  "clicksByDate": [
+    { "date": "2023-10-01", "clicks": 200 },
+    { "date": "2023-10-02", "clicks": 800 }
+  ],
+  "osType": [
+    { "osName": "Windows", "uniqueClicks": 400, "uniqueUsers": 100 },
+    { "osName": "iOS", "uniqueClicks": 300, "uniqueUsers": 80 }
+  ],
+  "deviceType": [
+    { "deviceName": "mobile", "uniqueClicks": 600, "uniqueUsers": 200 },
+    { "deviceName": "desktop", "uniqueClicks": 400, "uniqueUsers": 100 }
+  ]
+}
+```
 
 ---
 
-## ⚡ Setup & Installation
 
-### 1️⃣ Clone the Repository  
-```sh
-git clone https://github.com/yourusername/url-shortener.git
-cd url-shortener
+
